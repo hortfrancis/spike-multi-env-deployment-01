@@ -16,6 +16,7 @@ function App() {
     <div className='App'>
       <h1>Spike Multi-Env Deployment 01</h1>
       <p><em>Spike project to explore and describe how to handle automated deployment to multiple environments, using Git & GitHub.</em></p>
+      GitHub repo: <a target='_blank' href='https://github.com/hortfrancis/spike-multi-env-deployment-01/'>github.com/hortfrancis/spike-multi-env-deployment-01</a>
       <hr />
 
       <p>npm package version: <code>{PACKAGE_VERSION}</code></p>
