@@ -5,6 +5,8 @@ const ENVIRONMENT = import.meta.env.MODE;
 
 function App() {
 
+  // A generic change, to test `npm version` (#1) 
+
   console.log('Environment Variables:', env);
 
 
