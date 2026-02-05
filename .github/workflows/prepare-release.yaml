@@ -1,0 +1,81 @@
+name: Prepare release to prod
+
+on:
+  # On manual trigger in GitHub Actions panel 
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Next version (e.g. 1.0.0). No leading v."
+        required: true
+        type: string
+
+permissions: 
+  contents: write 
+  pull-requests: write 
+
+jobs:
+  prepare-release:
+    runs-on: ubuntu-latest
+    steps: 
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          # Fetch entire Git history 
+          fetch-depth: 0
+
+      - name: Validate version input (basic SemVer x.y.z)
+        run: |
+          VERSION="${{ inputs.version }}"
+          if ! echo "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "Version must look like 1.2.3 (digits.digits.digits). Got: $VERSION"
+            exit 1
+          fi 
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm ci
+
+        # Create a new `release/` PR branch,
+        # & set the npm package version to be the same as the release version 
+      - name: Create release branch + bump version (no tag)
+        run: |
+          VERSION="${{ inputs.version }}"
+          BRANCH="release/$VERSION"
+
+          # Bail if branch already exists remotely ( to avoid accidental overwrites)
+          if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+            echo "Branch already exists on origin: $BRANCH"
+            exit 1
+          fi
+
+          git checkout -b "$BRANCH"
+          npm version "$VERSION" --no-git-tag-version
+
+          git add package.json package-lock.json
+          git commit -m "chore(release): $VERSION"
+          git push -u origin "$BRANCH"
+
+      - name: Create PR back to main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${{ inputs.version }}"
+          BRANCH="release/$VERSION"
+
+          gh pr create \
+            --title "chore(release): $VERSION" \
+            --body "$(cat <<'EOF'
+          This PR bumps the app version for the next release to environment \`prod\`.
+
+          After merging: 
+          - Create a new release: [github.com/hortfrancis/spike-multi-env-deployment-01/releases](https://github.com/hortfrancis/spike-multi-env-deployment-01/releases)
+            - Create a new tag named \`v$VERSION\`
+          EOF
+          )" \
+            --base main \
+            --head "$BRANCH"

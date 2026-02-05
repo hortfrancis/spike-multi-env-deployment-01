@@ -3,17 +3,25 @@ const env = import.meta.env;
 // Using Vite mode to track environments 
 const ENVIRONMENT = import.meta.env.MODE;
 
+const PACKAGE_VERSION = import.meta.env.VITE_PACKAGE_VERSION;
+const APP_VERSION = import.meta.env.VITE_APP_VERSION;
+
 function App() {
 
   // A generic change, to test `npm version` (#1) 
 
   console.log('Environment Variables:', env);
 
-
   return (
     <div className='App'>
       <h1>Spike Multi-Env Deployment 01</h1>
       <p><em>Spike project to explore and describe how to handle automated deployment to multiple environments, using Git & GitHub.</em></p>
+      <hr />
+
+      <p>npm package version: <code>{PACKAGE_VERSION}</code></p>
+      <p>App version: <code>{APP_VERSION}</code></p>
+      <hr />
+      
       <p><strong>Current environment: <code className='highlight-environment'>{ENVIRONMENT}</code></strong></p>
       {ENVIRONMENT === 'dev' && (
         <p>This <code>dev</code> deployment will deploy on <strong>any push</strong> to branch <code>main</code>.</p>
