@@ -14,7 +14,7 @@ function App() {
       <p><em>Spike project to explore and describe how to handle automated deployment to multiple environments, using Git & GitHub.</em></p>
       <p><strong>Current environment: <code>{ENVIRONMENT}</code></strong></p>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
