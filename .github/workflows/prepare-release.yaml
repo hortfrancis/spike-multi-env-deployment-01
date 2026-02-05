@@ -1,7 +1,7 @@
 name: Prepare release to prod
 
 on:
-  # On manual trigger in GitHub Actions panel 
+  # On manual trigger in GitHub Actions panel
   workflow_dispatch:
     inputs:
       version:
@@ -9,19 +9,18 @@ on:
         required: true
         type: string
 
-permissions: 
-  contents: write 
-  pull-requests: write 
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   prepare-release:
     runs-on: ubuntu-latest
-    steps: 
-
+    steps:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          # Fetch entire Git history 
+          # Fetch entire Git history
           fetch-depth: 0
 
       - name: Validate version input (basic SemVer x.y.z)
@@ -30,8 +29,8 @@ jobs:
           if ! echo "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
             echo "Version must look like 1.2.3 (digits.digits.digits). Got: $VERSION"
             exit 1
-          fi 
-      
+          fi
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -46,7 +45,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
         # Create a new `release/` PR branch,
-        # & set the npm package version to be the same as the release version 
+        # & set the npm package version to be the same as the release version
       - name: Create release branch + bump version (no tag)
         run: |
           VERSION="${{ inputs.version }}"
@@ -62,7 +61,9 @@ jobs:
           npm version "$VERSION" --no-git-tag-version
 
           git add package.json package-lock.json
-          git commit -m "chore(release): $VERSION"
+          git commit \
+            -m "chore(release): $VERSION" \
+            -m "- Bump npm package version to $VERSION"
           git push -u origin "$BRANCH"
 
       - name: Create PR back to main
