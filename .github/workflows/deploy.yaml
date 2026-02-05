@@ -26,6 +26,8 @@ jobs:
 
       - name: Build React app (dev)
         run: npm run build:dev
+        env:
+          VITE_APP_VERSION: ${{ github.sha }} # Commit SHA
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
@@ -52,6 +54,8 @@ jobs:
 
       - name: Build React app (uat)
         run: npm run build:uat
+        env:
+          VITE_APP_VERSION: ${{ github.ref_name }} # Release tag
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
@@ -78,6 +82,8 @@ jobs:
 
       - name: Build React app (pp)
         run: npm run build:pp
+        env:
+          VITE_APP_VERSION: ${{ github.ref_name }} # Release tag
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
@@ -104,6 +110,8 @@ jobs:
 
       - name: Build React app (prod)
         run: npm run build:prod
+        env:
+          VITE_APP_VERSION: ${{ github.ref_name }} # Release tag
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
