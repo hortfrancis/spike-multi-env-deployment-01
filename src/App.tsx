@@ -22,6 +22,18 @@ function App() {
           <p>For example, <code>v1.0.0-uat</code>.</p>
         </>
       )}
+      {ENVIRONMENT === 'pp' && (
+        <>
+          <p>This <code>pp</code> deployment will deploy when a <strong>tag with the pattern</strong> <code>v*-pp</code> is pushed.</p>
+          <p>For example, <code>v1.0.0-pp</code>.</p>
+        </>
+      )}
+      {ENVIRONMENT === 'prod' && (
+        <>
+          <p>This <code>prod</code> deployment will deploy when a <strong>tag with the pattern</strong> <code>v*</code> is pushed, without any suffix.</p>
+          <p>For example, <code>v1.0.0</code>.</p>
+        </>
+      )}
     </div>
   );
 };
